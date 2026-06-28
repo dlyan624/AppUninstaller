@@ -26,8 +26,8 @@ public class WhitelistManager {
 
     public void saveWhitelist() {
         SharedPreferences.Editor editor = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit();
-        editor.putStringSet(KEY_WHITELIST, whitelistSet);
-        editor.apply();
+        editor.putStringSet(KEY_WHITELIST, new HashSet<>(whitelistSet));
+        editor.commit();
     }
 
     public boolean addToWhitelist(String packageName) {

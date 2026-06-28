@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements AppAdapter.OnAppA
     private List<AppInfo> appList;
     private WhitelistManager whitelistManager;
     
-    private Button btnSelectAll, btnDeselectAll, btnAddAllToWhitelist, btnSaveWhitelist, btnUninstallSelected;
+    private Button btnSelectAll, btnDeselectAll, btnAddAllToWhitelist, btnRemoveFromWhitelist, btnSaveWhitelist, btnUninstallSelected;
     private TextView tvStats;
 
     @Override
@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements AppAdapter.OnAppA
         btnSelectAll = findViewById(R.id.btnSelectAll);
         btnDeselectAll = findViewById(R.id.btnDeselectAll);
         btnAddAllToWhitelist = findViewById(R.id.btnAddAllToWhitelist);
+        btnRemoveFromWhitelist = findViewById(R.id.btnRemoveFromWhitelist);
         btnSaveWhitelist = findViewById(R.id.btnSaveWhitelist);
         btnUninstallSelected = findViewById(R.id.btnUninstallSelected);
 
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity implements AppAdapter.OnAppA
         btnSelectAll.setOnClickListener(v -> selectAll(true));
         btnDeselectAll.setOnClickListener(v -> selectAll(false));
         btnAddAllToWhitelist.setOnClickListener(v -> addAllToWhitelist());
+        btnRemoveFromWhitelist.setOnClickListener(v -> removeSelectedFromWhitelist());
         btnSaveWhitelist.setOnClickListener(v -> saveCurrentWhitelist());
         btnUninstallSelected.setOnClickListener(v -> confirmAndUninstall());
     }
@@ -171,6 +173,25 @@ public class MainActivity extends AppCompatActivity implements AppAdapter.OnAppA
         }
         updateStats();
         Toast.makeText(this, "已将 " + added + " 个应用一键加入白名单", Toast.LENGTH_SHORT).show();
+    }
+
+    private void removeSelectedFromWhitelist() {
+        if (appList == null) return;
+        int removed = 0;
+        for (AppInfo app : appList) {
+            if (app.isSelected() && app.isInWhitelist()) {
+                whitelistManager.removeFromWhitelist(app.getPackageName());
+                app.setInWhitelist(false);
+                app.setSelected(true); // 移出白名单后默认选中
+                removed++;
+            }
+        }
+        whitelistManager.saveWhitelist();
+        if (appAdapter != null) {
+            appAdapter.notifyDataSetChanged();
+        }
+        updateStats();
+        Toast.makeText(this, "已将 " + removed + " 个应用移出白名单", Toast.LENGTH_SHORT).show();
     }
 
     private void confirmAndUninstall() {

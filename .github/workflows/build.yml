@@ -23,8 +23,15 @@ jobs:
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-version: '8.5'
+
+    - name: Create debug keystore
+      run: |
+        mkdir -p ~/.android
+        keytool -genkeypair -v -keystore ~/.android/debug.keystore \
+          -storepass android -alias androiddebugkey -keypass android \
+          -keyalg RSA -keysize 2048 -validity 365 \
+          -dname "CN=Android Debug,O=Android,C=US" 2>/dev/null || true
+        echo "Debug keystore ready"
 
     - name: Build with Gradle
       run: gradle assembleDebug
@@ -32,6 +39,21 @@ jobs:
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: app-debug-apk
+        name: app-release-apk
         path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 30
+
+    - name: Build summary
+      if: success()
+      run: |
+        echo "## ✅ 构建成功！" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 生成的 APK 文件" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "APK 文件已上传到 Artifacts，可以在以下位置下载：" >> $GITHUB_STEP_SUMMARY
+        echo "- **Actions 标签页** → 本次运行 → **Artifacts** 区域" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 安装方法" >> $GITHUB_STEP_SUMMARY
+        echo "1. 下载 APK 到电脑" >> $GITHUB_STEP_SUMMARY
+        echo "2. 传输到 Android 手机" >> $GITHUB_STEP_SUMMARY
+        echo "3. 在手机上打开并安装（需允许未知来源）" >> $GITHUB_STEP_SUMMARY

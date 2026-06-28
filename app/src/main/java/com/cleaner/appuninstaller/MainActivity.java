@@ -128,8 +128,25 @@ public class MainActivity extends AppCompatActivity implements AppAdapter.OnAppA
     }
 
     private void saveCurrentWhitelist() {
+        // 将所有选中的应用加入白名单
+        int added = 0;
+        if (appList != null) {
+            for (AppInfo app : appList) {
+                if (app.isSelected() && !app.isInWhitelist()) {
+                    whitelistManager.addToWhitelist(app.getPackageName());
+                    app.setInWhitelist(true);
+                    app.setSelected(false);
+                    added++;
+                }
+            }
+        }
+        // 持久化到存储
         whitelistManager.saveWhitelist();
-        Toast.makeText(this, R.string.whitelist_saved, Toast.LENGTH_SHORT).show();
+        if (appAdapter != null) {
+            appAdapter.notifyDataSetChanged();
+        }
+        updateStats();
+        Toast.makeText(this, "已将 " + added + " 个应用加入白名单并保存", Toast.LENGTH_SHORT).show();
     }
 
     private void confirmAndUninstall() {

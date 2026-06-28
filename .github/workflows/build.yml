@@ -23,30 +23,13 @@ jobs:
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-version: '8.5'
 
     - name: Build with Gradle
-      run: gradle assembleRelease
+      run: gradle assembleDebug
 
     - name: Upload APK
       uses: actions/upload-artifact@v4
       with:
-        name: app-release-apk
-        path: app/build/outputs/apk/release/*.apk
+        name: app-debug-apk
+        path: app/build/outputs/apk/debug/app-debug.apk
         retention-days: 30
-
-    - name: Build summary
-      if: success()
-      run: |
-        echo "## ✅ 构建成功！" >> 
-        echo "" >> 
-        echo "### 生成的 APK 文件" >> 
-        echo "" >> 
-        echo "APK 文件已上传到 Artifacts，可以在以下位置下载：" >> 
-        echo "- **Actions 标签页** → 本次运行 → **Artifacts** 区域" >> 
-        echo "" >> 
-        echo "### 安装方法" >> 
-        echo "1. 下载 APK 到电脑" >> 
-        echo "2. 传输到 Android 手机" >> 
-        echo "3. 在手机上打开并安装（需允许未知来源）" >> 

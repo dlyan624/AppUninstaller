@@ -1,4 +1,4 @@
-﻿name: Build Android APK
+name: Build Android APK
 
 on:
   push:
@@ -23,6 +23,8 @@ jobs:
 
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.5'
 
     - name: Build with Gradle
       run: gradle assembleRelease
@@ -37,14 +39,14 @@ jobs:
     - name: Build summary
       if: success()
       run: |
-        echo "## ✅ 构建成功！" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 生成的 APK 文件" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "APK 文件已上传到 Artifacts，可以在以下位置下载：" >> $GITHUB_STEP_SUMMARY
-        echo "- **Actions 标签页** → 本次运行 → **Artifacts** 区域" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 安装方法" >> $GITHUB_STEP_SUMMARY
-        echo "1. 下载 APK 到电脑" >> $GITHUB_STEP_SUMMARY
-        echo "2. 传输到 Android 手机" >> $GITHUB_STEP_SUMMARY
-        echo "3. 在手机上打开并安装（需允许未知来源）" >> $GITHUB_STEP_SUMMARY
+        echo "## ✅ 构建成功！" >> 
+        echo "" >> 
+        echo "### 生成的 APK 文件" >> 
+        echo "" >> 
+        echo "APK 文件已上传到 Artifacts，可以在以下位置下载：" >> 
+        echo "- **Actions 标签页** → 本次运行 → **Artifacts** 区域" >> 
+        echo "" >> 
+        echo "### 安装方法" >> 
+        echo "1. 下载 APK 到电脑" >> 
+        echo "2. 传输到 Android 手机" >> 
+        echo "3. 在手机上打开并安装（需允许未知来源）" >> 

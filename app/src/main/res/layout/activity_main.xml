@@ -47,7 +47,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/select_all"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="4dp"/>
 
             <Button
                 android:id="@+id/btnDeselectAll"
@@ -55,7 +55,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/deselect_all"
-                android:layout_marginEnd="8dp"/>
+                android:layout_marginEnd="4dp"/>
+
+            <Button
+                android:id="@+id/btnAddAllToWhitelist"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="一键加白名单"
+                android:textSize="12sp"
+                android:backgroundTint="#4CAF50"
+                android:textColor="#FFFFFF"
+                android:layout_marginEnd="4dp"/>
 
             <Button
                 android:id="@+id/btnSaveWhitelist"

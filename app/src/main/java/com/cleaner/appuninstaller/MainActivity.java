@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements AppAdapter.OnAppA
     private List<AppInfo> appList;
     private WhitelistManager whitelistManager;
     
-    private Button btnSelectAll, btnDeselectAll, btnSaveWhitelist, btnUninstallSelected;
+    private Button btnSelectAll, btnDeselectAll, btnAddAllToWhitelist, btnSaveWhitelist, btnUninstallSelected;
     private TextView tvStats;
 
     @Override
@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements AppAdapter.OnAppA
         rvApps = findViewById(R.id.rvApps);
         btnSelectAll = findViewById(R.id.btnSelectAll);
         btnDeselectAll = findViewById(R.id.btnDeselectAll);
+        btnAddAllToWhitelist = findViewById(R.id.btnAddAllToWhitelist);
         btnSaveWhitelist = findViewById(R.id.btnSaveWhitelist);
         btnUninstallSelected = findViewById(R.id.btnUninstallSelected);
 
@@ -49,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements AppAdapter.OnAppA
         
         btnSelectAll.setOnClickListener(v -> selectAll(true));
         btnDeselectAll.setOnClickListener(v -> selectAll(false));
+        btnAddAllToWhitelist.setOnClickListener(v -> addAllToWhitelist());
         btnSaveWhitelist.setOnClickListener(v -> saveCurrentWhitelist());
         btnUninstallSelected.setOnClickListener(v -> confirmAndUninstall());
     }
@@ -59,10 +61,13 @@ public class MainActivity extends AppCompatActivity implements AppAdapter.OnAppA
             public void onScanComplete(List<AppInfo> apps) {
                 appList = apps;
                 
-                // 恢复白名单状态
+                // 恢复白名单状态，不在白名单的默认选中
                 for (AppInfo app : appList) {
                     if (whitelistManager.isInWhitelist(app.getPackageName())) {
                         app.setInWhitelist(true);
+                        app.setSelected(false);
+                    } else {
+                        app.setSelected(true); // 不在白名单的默认勾选
                     }
                 }
                 
@@ -147,6 +152,25 @@ public class MainActivity extends AppCompatActivity implements AppAdapter.OnAppA
         }
         updateStats();
         Toast.makeText(this, "已将 " + added + " 个应用加入白名单并保存", Toast.LENGTH_SHORT).show();
+    }
+
+    private void addAllToWhitelist() {
+        if (appList == null) return;
+        int added = 0;
+        for (AppInfo app : appList) {
+            if (!app.isInWhitelist()) {
+                whitelistManager.addToWhitelist(app.getPackageName());
+                app.setInWhitelist(true);
+                app.setSelected(false);
+                added++;
+            }
+        }
+        whitelistManager.saveWhitelist();
+        if (appAdapter != null) {
+            appAdapter.notifyDataSetChanged();
+        }
+        updateStats();
+        Toast.makeText(this, "已将 " + added + " 个应用一键加入白名单", Toast.LENGTH_SHORT).show();
     }
 
     private void confirmAndUninstall() {
